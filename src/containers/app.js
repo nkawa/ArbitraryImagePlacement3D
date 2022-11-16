@@ -124,7 +124,7 @@ const App = (props)=>{
   React.useEffect(()=>{
     initProc()
     if(imglist.length > 0){
-      setTimeout(()=>{setDispStart(true)},1000);
+      setTimeout(()=>{setDispStart(true)},1500);
     }else{
       setDispStart(false)
     }
