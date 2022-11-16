@@ -1,3 +1,2 @@
-# Harmoware-VIS-3D-Text
-![topimage](topimage.jpg)
-
+# ArbitraryImagePlacement3D
+Create a "data" directory and copy the image files.
