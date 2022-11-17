@@ -191,24 +191,33 @@ const TransformController = (props)=>{
         <input type="range" value={pos3d[imgIdIdx].x}
           min={-1000} max={1000} step={0.1}
           onChange={setPos3d_x}
-          className="harmovis_input_range" id="pos_x" />
-        {`: ${pos3d[imgIdIdx].x}`}
+          className="harmovis_input_range" id="pos_x" />:
+        <input type="number" value={pos3d[imgIdIdx].x}
+          min={-1000} max={1000} step={0.1}
+          onChange={setPos3d_x}
+          className="harmovis_input_number" id="pos_x" />
       </li>
       <li className="flex_row">
         <label htmlFor="pos_y">{`pos_y :`}</label>
         <input type="range" value={pos3d[imgIdIdx].y}
           min={-1000} max={1000} step={0.1}
           onChange={setPos3d_y}
-          className="harmovis_input_range" id="pos_y" />
-        {`: ${pos3d[imgIdIdx].y}`}
+          className="harmovis_input_range" id="pos_y" />:
+        <input type="number" value={pos3d[imgIdIdx].y}
+          min={-1000} max={1000} step={0.1}
+          onChange={setPos3d_y}
+          className="harmovis_input_number" id="pos_y" />
       </li>
       <li className="flex_row">
         <label htmlFor="pos_z">{`pos_z :`}</label>
         <input type="range" value={pos3d[imgIdIdx].z}
           min={-1000} max={1000} step={0.1}
           onChange={setPos3d_z}
-          className="harmovis_input_range" id="pos_z" />
-        {`: ${pos3d[imgIdIdx].z}`}
+          className="harmovis_input_range" id="pos_z" />:
+        <input type="number" value={pos3d[imgIdIdx].z}
+          min={-1000} max={1000} step={0.1}
+          onChange={setPos3d_z}
+          className="harmovis_input_number" id="pos_z" />
       </li>
 
       <li className="flex_row">
@@ -216,32 +225,44 @@ const TransformController = (props)=>{
         <input type="range" value={deg3d[imgIdIdx].x}
           min={-180} max={180} step={1}
           onChange={setDeg3d_x}
-          className="harmovis_input_range" id="rotate_x" />
-        {`: ${deg3d[imgIdIdx].x}deg`}
+          className="harmovis_input_range" id="rotate_x" />:
+        <input type="number" value={deg3d[imgIdIdx].x}
+          min={-180} max={180} step={1}
+          onChange={setDeg3d_x}
+          className="harmovis_input_number" id="rotate_x" />deg
       </li>
       <li className="flex_row">
         <label htmlFor="rotate_y">{`rotate_y :`}</label>
         <input type="range" value={deg3d[imgIdIdx].y}
           min={-180} max={180} step={1}
           onChange={setDeg3d_y}
-          className="harmovis_input_range" id="rotate_y" />
-        {`: ${deg3d[imgIdIdx].y}deg`}
+          className="harmovis_input_range" id="rotate_y" />:
+        <input type="number" value={deg3d[imgIdIdx].y}
+          min={-180} max={180} step={1}
+          onChange={setDeg3d_y}
+          className="harmovis_input_number" id="rotate_y" />deg
       </li>
       <li className="flex_row">
         <label htmlFor="rotate_z">{`rotate_z :`}</label>
         <input type="range" value={deg3d[imgIdIdx].z}
           min={-180} max={180} step={1}
           onChange={setDeg3d_z}
-          className="harmovis_input_range" id="rotate_z" />
-        {`: ${deg3d[imgIdIdx].z}deg`}
+          className="harmovis_input_range" id="rotate_z" />:
+        <input type="number" value={deg3d[imgIdIdx].z}
+          min={-180} max={180} step={1}
+          onChange={setDeg3d_z}
+          className="harmovis_input_number" id="rotate_z" />deg
       </li>
       <li className="flex_row">
         <label htmlFor="size">{`size :`}</label>
         <input type="range" value={size3d[imgIdIdx]}
           min={0} max={100} step={0.1}
           onChange={setSize3d}
-          className="harmovis_input_range" id="size" />
-        {`: ${size3d[imgIdIdx]}`}
+          className="harmovis_input_range" id="size" />:
+        <input type="number" value={size3d[imgIdIdx]}
+          min={0} max={100} step={0.1}
+          onChange={setSize3d}
+          className="harmovis_input_number" id="size" />
       </li>
 
       <li className="flex_row">
@@ -249,32 +270,44 @@ const TransformController = (props)=>{
         <input type="range" value={wkTrimSize[imgIdIdx].top}
           min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].bottom} step={1}
           onChange={onChangeTrimTop}
-          className="harmovis_input_range" id="trim_top" />
-        {`: ${wkTrimSize[imgIdIdx].top}px`}
+          className="harmovis_input_range" id="trim_top" />:
+        <input type="number" value={wkTrimSize[imgIdIdx].top}
+          min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].bottom} step={1}
+          onChange={onChangeTrimTop}
+          className="harmovis_input_number" id="trim_top" />px
       </li>
       <li className="flex_row">
         <label htmlFor="trim_bottom">{`trim_bottom :`}</label>
         <input type="range" value={wkTrimSize[imgIdIdx].bottom}
           min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].top} step={1}
           onChange={onChangeTrimBottom}
-          className="harmovis_input_range" id="trim_bottom" />
-        {`: ${wkTrimSize[imgIdIdx].bottom}px`}
+          className="harmovis_input_range" id="trim_bottom" />:
+        <input type="number" value={wkTrimSize[imgIdIdx].bottom}
+          min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].top} step={1}
+          onChange={onChangeTrimBottom}
+          className="harmovis_input_number" id="trim_bottom" />px
       </li>
       <li className="flex_row">
         <label htmlFor="trim_left">{`trim_left :`}</label>
         <input type="range" value={wkTrimSize[imgIdIdx].left}
           min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].right} step={1}
           onChange={onChangeTrimLeft}
-          className="harmovis_input_range" id="trim_left" />
-        {`: ${wkTrimSize[imgIdIdx].left}px`}
+          className="harmovis_input_range" id="trim_left" />:
+        <input type="number" value={wkTrimSize[imgIdIdx].left}
+          min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].right} step={1}
+          onChange={onChangeTrimLeft}
+          className="harmovis_input_number" id="trim_left" />px
       </li>
       <li className="flex_row">
         <label htmlFor="trim_right">{`trim_right :`}</label>
         <input type="range" value={wkTrimSize[imgIdIdx].right}
           min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].left} step={1}
           onChange={onChangeTrimRight}
-          className="harmovis_input_range" id="trim_right" />
-        {`: ${wkTrimSize[imgIdIdx].right}px`}
+          className="harmovis_input_range" id="trim_right" />:
+        <input type="number" value={wkTrimSize[imgIdIdx].right}
+          min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].left} step={1}
+          onChange={onChangeTrimRight}
+          className="harmovis_input_number" id="trim_right" />px
       </li>
 
       <li className="flex_row">

@@ -2,7 +2,7 @@
 
 div.harmovis_controller {
   @extend .harmovis_controller;
-  width: 280px;
+  width: 300px;
   ul {
     list-style-type: none; 
     padding: 0px; 
@@ -38,11 +38,6 @@ div.harmovis_controller {
 div.harmovis_footer {
   @extend .harmovis_footer;
   left: 100px;
-}
-input.harmovis_input_number[type="number"]{
-  @extend .harmovis_input_number;
-  text-align: right;
-  width: 100%;
 }
 div.imagecanvas {
   width: 100%; 
