@@ -84,7 +84,6 @@ const App = (props)=>{
 
   const initProc = ()=>{
     const workcanvasRef = []
-    const workBounds = []
     const workImgSize = []
     const workTrimmSize = []
     const workupdate = []
@@ -105,7 +104,6 @@ const App = (props)=>{
       workaspect.push([0,0,0,0])
     }
     setCanvasRef(workcanvasRef)
-    setBounds(workBounds)
     setImgSize(workImgSize)
     setImgDispSize(workImgSize)
     setTrimSize(workTrimmSize)
