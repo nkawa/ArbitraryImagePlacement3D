@@ -60,12 +60,7 @@ const App = (props)=>{
 
   const getBounds = (size,deg,pos,aspect)=>{
     const r = Math.abs((size/2)/Math.sin(aspect[2]))
-    const rotate_x = [
-      [r*Math.cos((deg.z+aspect[0])*(Math.PI/180)),r*Math.sin((deg.z+aspect[0])*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+aspect[1])*(Math.PI/180)),r*Math.sin((deg.z+aspect[1])*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+aspect[2])*(Math.PI/180)),r*Math.sin((deg.z+aspect[2])*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+aspect[3])*(Math.PI/180)),r*Math.sin((deg.z+aspect[3])*(Math.PI/180)),0],
-    ]
+    const rotate_x = aspect.map((e)=>[r*Math.cos((deg.z+e)*(Math.PI/180)),r*Math.sin((deg.z+e)*(Math.PI/180)),0])
     const rotate_y = rotate_x.map((e)=>{
       return [e[0],e[1]*Math.cos((deg.x)*(Math.PI/180)),e[1]*Math.sin((deg.x)*(Math.PI/180))]
     })
@@ -74,12 +69,7 @@ const App = (props)=>{
     const rotate_z = rotate_y.map((e,i)=>{
       return [r2[i]*Math.sin((deg.y+deg2[i])*(Math.PI/180)),e[1],r2[i]*Math.cos((deg.y+deg2[i])*(Math.PI/180))]
     })
-    return [
-      [rotate_z[0][0]+pos.x,rotate_z[0][1]+pos.y,rotate_z[0][2]+pos.z],
-      [rotate_z[1][0]+pos.x,rotate_z[1][1]+pos.y,rotate_z[1][2]+pos.z],
-      [rotate_z[2][0]+pos.x,rotate_z[2][1]+pos.y,rotate_z[2][2]+pos.z],
-      [rotate_z[3][0]+pos.x,rotate_z[3][1]+pos.y,rotate_z[3][2]+pos.z],
-    ]
+    return rotate_z.map((e)=>[e[0]+pos.x,e[1]+pos.y,e[2]+pos.z])
   }
 
   const initProc = ()=>{
@@ -112,6 +102,8 @@ const App = (props)=>{
     setDeg3d(workdeg3d)
     setPos3d(workpos3d)
     setAspect(workaspect)
+    setImgId(null)
+    setImgIdIdx(undefined)
   }
 
   React.useEffect(()=>{
