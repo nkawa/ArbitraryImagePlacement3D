@@ -38,6 +38,7 @@ const App = (props)=>{
   const [size3d, setSize3d] = useState([])
   const [deg3d, setDeg3d] = useState([])
   const [pos3d, setPos3d] = useState([])
+  const [aspect, setAspect] = useState([])
 
   const { actions, viewport, loading } = props;
 
@@ -57,13 +58,13 @@ const App = (props)=>{
     }
   },[imgId])
 
-  const getBounds = (size,deg,pos)=>{
-    const r = (size/2)*Math.SQRT2
+  const getBounds = (size,deg,pos,aspect)=>{
+    const r = Math.abs((size/2)/Math.sin(aspect[2]))
     const rotate_x = [
-      [r*Math.cos((deg.z+225)*(Math.PI/180)),r*Math.sin((deg.z+225)*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+135)*(Math.PI/180)),r*Math.sin((deg.z+135)*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+45)*(Math.PI/180)),r*Math.sin((deg.z+45)*(Math.PI/180)),0],
-      [r*Math.cos((deg.z+315)*(Math.PI/180)),r*Math.sin((deg.z+315)*(Math.PI/180)),0],
+      [r*Math.cos((deg.z+aspect[0])*(Math.PI/180)),r*Math.sin((deg.z+aspect[0])*(Math.PI/180)),0],
+      [r*Math.cos((deg.z+aspect[1])*(Math.PI/180)),r*Math.sin((deg.z+aspect[1])*(Math.PI/180)),0],
+      [r*Math.cos((deg.z+aspect[2])*(Math.PI/180)),r*Math.sin((deg.z+aspect[2])*(Math.PI/180)),0],
+      [r*Math.cos((deg.z+aspect[3])*(Math.PI/180)),r*Math.sin((deg.z+aspect[3])*(Math.PI/180)),0],
     ]
     const rotate_y = rotate_x.map((e)=>{
       return [e[0],e[1]*Math.cos((deg.x)*(Math.PI/180)),e[1]*Math.sin((deg.x)*(Math.PI/180))]
@@ -90,6 +91,7 @@ const App = (props)=>{
     const worksize3d = []
     const workdeg3d = []
     const workpos3d = []
+    const workaspect = []
     for(let i=0; i<imglist.length; i=i+1){
       const img = imglist[i]
       const shift = i%10
@@ -100,6 +102,7 @@ const App = (props)=>{
       worksize3d.push(img.size !== undefined ? img.size : 20)
       workdeg3d.push(img.deg !== undefined ? img.deg : {x:0, y:0, z:0})
       workpos3d.push(img.pos !== undefined ? img.pos : {x:(shift*10-50), y:(shift*10-50), z:i*2})
+      workaspect.push([0,0,0,0])
     }
     setCanvasRef(workcanvasRef)
     setBounds(workBounds)
@@ -110,6 +113,7 @@ const App = (props)=>{
     setSize3d(worksize3d)
     setDeg3d(workdeg3d)
     setPos3d(workpos3d)
+    setAspect(workaspect)
   }
 
   React.useEffect(()=>{
@@ -133,17 +137,17 @@ const App = (props)=>{
   React.useEffect(()=>{
     if(imgIdIdx === undefined){
       const workBounds = []
-      const length = Math.min(size3d.length,deg3d.length,pos3d.length)
+      const length = Math.min(size3d.length,deg3d.length,pos3d.length,aspect.length)
       for(let i=0; i<length; i=i+1){
-        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i])
+        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i],aspect[i])
       }
       setBounds(workBounds)
     }else{
       const workBounds = [...bounds]
-      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx])
+      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx],aspect[imgIdIdx])
       setBounds(workBounds)
     }
-  },[imgIdIdx,size3d,deg3d,pos3d])
+  },[imgIdIdx,size3d,deg3d,pos3d,aspect])
 
   React.useEffect(()=>{
     if(imgDispSize.every((el)=>el.width>0 && el.height>0)){
@@ -153,14 +157,18 @@ const App = (props)=>{
     const workImgSize = []
     const workImgDispSize = []
     const workTrimmSize = []
+    const workaspect = []
     for(let i=0; i<wkImgRef.length; i=i+1){
       workImgSize.push({width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
+      const deg = Math.atan2(wkImgRef[i].naturalHeight,wkImgRef[i].naturalWidth)*180/Math.PI
+      workaspect.push([180+deg,180-deg,deg,360-deg])
       workImgDispSize.push({width:wkImgRef[i].clientWidth,height:wkImgRef[i].clientHeight})
       workTrimmSize.push({x:0,y:0,width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
     }
     setImgRef(wkImgRef)
     setImgSize(workImgSize)
     setImgDispSize(workImgDispSize)
+    setAspect(workaspect)
     for(let i=0; i<imglist.length; i=i+1){
       if(imglist[i].trim !== undefined){
         workTrimmSize[i] = imglist[i].trim
@@ -187,24 +195,14 @@ const App = (props)=>{
         for(let i=0; i<context.length; i=i+1){
           const {width:dspwidth,height:dspheight} = imgDispSize[i] !== undefined ? imgDispSize[i] : {width:0,height:0}
           const {x,y,width:trimwidth,height:trimheight} = trimSize[i]
-          const dspsize = Math.max(dspwidth,dspheight)
-          const x_shift = (dspsize - dspwidth) / 2
-          const y_shift = (dspsize - dspheight) / 2
-          context[i].clearRect(0,0,dspsize,dspsize)
-          context[i].drawImage(imgRef[i],
-            x, y, trimwidth, trimheight,
-            x+x_shift, y+y_shift, trimwidth, trimheight)
+          context[i].clearRect(0,0,dspwidth,dspheight)
+          context[i].drawImage(imgRef[i], x, y, trimwidth, trimheight, x, y, trimwidth, trimheight)
         }
       }else{
         const {width:dspwidth,height:dspheight} = imgDispSize[imgIdIdx] !== undefined ? imgDispSize[imgIdIdx] : {width:0,height:0}
         const {x,y,width:trimwidth,height:trimheight} = trimSize[imgIdIdx]
-        const dspsize = Math.max(dspwidth,dspheight)
-        const x_shift = (dspsize - dspwidth) / 2
-        const y_shift = (dspsize - dspheight) / 2
-        context[imgIdIdx].clearRect(0,0,dspsize,dspsize)
-        context[imgIdIdx].drawImage(imgRef[imgIdIdx],
-          x, y, trimwidth, trimheight,
-          x+x_shift, y+y_shift, trimwidth, trimheight)
+        context[imgIdIdx].clearRect(0,0,dspwidth,dspheight)
+        context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, x, y, trimwidth, trimheight)
       }
     }
   },[dispStart,imgDispSize,trimSize])
@@ -233,10 +231,9 @@ const App = (props)=>{
     return imglist.map((element,idx)=>{
       const {width,height} = imgSize[idx] !== undefined ? imgSize[idx] : {width:0,height:0}
       const {width:dspwidth,height:dspheight} = imgDispSize[idx] !== undefined ? imgDispSize[idx] : {width:0,height:0}
-      const dspsize = Math.max(dspwidth,dspheight)
       return(<div key={idx}>
         <img draggable={false} className='img_handler' src={element.src} width={`${width?width:dspwidth}px`} height={`${height?height:dspheight}px`}/>
-        <canvas className='canvas_handler' width={`${dspsize}px`} height={`${dspsize}px`} ></canvas>
+        <canvas className='canvas_handler' width={`${dspwidth}px`} height={`${dspheight}px`} ></canvas>
       </div>)
     })
   }
