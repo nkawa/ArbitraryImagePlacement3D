@@ -22,6 +22,7 @@ const App = (props)=>{
   const [now, setNow] = React.useState(new Date())
   const [dispStart, setDispStart] = React.useState(false)
   const [imglist, setImgList] = React.useState([])
+  const [srclist, setSrcList] = React.useState([])
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
   const [viewState, updateViewState] = useState(INITIAL_VIEW_STATE);
@@ -33,7 +34,7 @@ const App = (props)=>{
   const [imgDispSize, setImgDispSize] = useState([])
   const [trimSize, setTrimSize] = useState([])
   const [imgId, setImgId] = useState(null)
-  const [imgIdIdx,setImgIdIdx] = useState(undefined)
+  const [imgIdIdx,setImgIdIdx] = useState(-1)
   const [update, setUpdate] = useState([])
   const [size3d, setSize3d] = useState([])
   const [deg3d, setDeg3d] = useState([])
@@ -54,7 +55,7 @@ const App = (props)=>{
       const value = parseFloat(imgId.match(/[0-9.]+/g)[0])
       setImgIdIdx(value|0)
     }else{
-      setImgIdIdx(undefined)
+      setImgIdIdx(-1)
     }
   },[imgId])
 
@@ -73,6 +74,7 @@ const App = (props)=>{
   }
 
   const initProc = ()=>{
+    const worksrclist = []
     const workcanvasRef = []
     const workImgSize = []
     const workTrimmSize = []
@@ -84,6 +86,7 @@ const App = (props)=>{
     for(let i=0; i<imglist.length; i=i+1){
       const img = imglist[i]
       const shift = i%10
+      worksrclist.push(img.src)
       workImgSize.push({width:0,height:0})
       workTrimmSize.push(img.trim !== undefined ? img.trim : {x:0,y:0,width:0,height:0})
       workcanvasRef.push(undefined)
@@ -93,6 +96,7 @@ const App = (props)=>{
       workpos3d.push(img.pos !== undefined ? img.pos : {x:(shift*10-50), y:(shift*10-50), z:i*2})
       workaspect.push([0,0,0,0])
     }
+    setSrcList(worksrclist)
     setCanvasRef(workcanvasRef)
     setImgSize(workImgSize)
     setImgDispSize(workImgSize)
@@ -103,7 +107,7 @@ const App = (props)=>{
     setPos3d(workpos3d)
     setAspect(workaspect)
     setImgId(null)
-    setImgIdIdx(undefined)
+    setImgIdIdx(-1)
   }
 
   React.useEffect(()=>{
@@ -125,7 +129,7 @@ const App = (props)=>{
   },[imglist])
 
   React.useEffect(()=>{
-    if(imgIdIdx === undefined){
+    if(imgIdIdx === -1){
       const workBounds = []
       const length = Math.min(size3d.length,deg3d.length,pos3d.length,aspect.length)
       for(let i=0; i<length; i=i+1){
@@ -181,7 +185,7 @@ const App = (props)=>{
 
   React.useEffect(()=>{
     if(dispStart && imgRef.length > 0 && canvasRef.length > 0 && imgRef.length === canvasRef.length){
-      if(imgIdIdx === undefined){
+      if(imgIdIdx === -1){
         for(let i=0; i<context.length; i=i+1){
           const {width:dspwidth,height:dspheight} = imgDispSize[i] !== undefined ? imgDispSize[i] : {width:0,height:0}
           const {x,y,width:trimwidth,height:trimheight} = trimSize[i]
@@ -256,9 +260,10 @@ const App = (props)=>{
   return (
     <Container {...props}>
       <Controller {...props} updateViewState={updateViewState} viewState={viewState} setImgList={setImgList}
-        imgId={imgId} setImgId={setImgId} imgIdIdx={imgIdIdx} imgSize={imgSize} getOutputData={getOutputData}
+        imgId={imgId} setImgId={setImgId} imgIdIdx={imgIdIdx} setImgIdIdx={setImgIdIdx} imgSize={imgSize}
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
-        trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate} />
+        trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
+        srclist={srclist} getOutputData={getOutputData} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'z', fov: 50})}

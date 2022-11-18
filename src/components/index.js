@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useMemo } from 'react';
 import {PlacementInput} from './placement-input'
 import {PlacementOutput} from './placement-output'
 
@@ -27,11 +27,17 @@ export default class Controller extends React.Component {
     }
   }
 
+  onChangeSelect(e){
+    const imgIdIdx = +e.target.value
+    this.props.setImgId(`BitmapLayer-${imgIdIdx}-${this.props.update[imgIdIdx]}`)
+  }
+
   render() {
+    const {setImgList, getOutputData, imgIdIdx, srclist} = this.props
     return (
         <div className="harmovis_controller">
-            <div className='panel'><PlacementInput setImgList={this.props.setImgList}/></div>
-            <div className='panel'><PlacementOutput getOutputData={this.props.getOutputData}/></div>
+            <div className='panel'><PlacementInput setImgList={setImgList}/></div>
+            <div className='panel'><PlacementOutput getOutputData={getOutputData}/></div>
             <ul className="flex_list">
             <li className="flex_row">
               <button onClick={this.onClick.bind(this,'zoom-in')} className='harmovis_button'>＋</button>
@@ -39,6 +45,12 @@ export default class Controller extends React.Component {
               <button onClick={this.onClick.bind(this,'reset')} className='harmovis_button'>RESET</button>
             </li>
             </ul>
+            <div className='panel'>
+              <select className='local_select' value={imgIdIdx} onChange={this.onChangeSelect.bind(this)}>
+              <option value="-1">select img</option>
+              {srclist.map((x,i)=><option value={i} key={i}>{x}</option>)}
+              </select>
+            </div>
             <TransformController {...this.props}/>
         </div>
     );
@@ -46,7 +58,7 @@ export default class Controller extends React.Component {
 }
 const TransformController = (props)=>{
   const {imgId, setImgId, imgIdIdx, size3d, deg3d, pos3d,
-    imgSize, trimSize, setTrimSize, update, setUpdate } = props
+    imgSize, trimSize, setTrimSize, update, setUpdate, srclist } = props
   const [wkTrimSize, setWktrimSize] = useState([])
 
   React.useEffect(()=>{
@@ -181,10 +193,9 @@ const TransformController = (props)=>{
     setImgId(null)
   }
 
-  return (<>{imgId === null || imgIdIdx === undefined ? null:
+  return (<>{imgId === null || imgIdIdx === -1 ? null:
     <ul className="flex_list">
       <li className="flex_row">Image Item Control</li>
-      <li className="flex_row">{`Select img No. ${imgIdIdx}`}</li>
 
       <li className="flex_row">
         <label htmlFor="pos_x">{`pos_x :`}</label>
