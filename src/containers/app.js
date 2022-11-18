@@ -234,7 +234,8 @@ const App = (props)=>{
 
   const onClick = (el)=>{
     if (el && el.layer) {
-      console.log(`el.object.id:${el.layer.id}`)
+      //console.log(`el:${el}`)
+      console.log({el})
       setImgId(el.layer.id)
     }
   }
@@ -267,7 +268,7 @@ const App = (props)=>{
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'z', fov: 50})}
-          viewState={viewState} controller={{scrollZoom:{smooth:true}}}
+          viewState={viewState} controller={{scrollZoom:{smooth:true},dragMode:'pan'}}
           onViewStateChange={v => updateViewState(v.viewState)}
           layers={[
               new LineLayer({
