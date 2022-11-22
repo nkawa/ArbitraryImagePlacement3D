@@ -59,9 +59,22 @@ const App = (props)=>{
     }
   },[imgId])
 
-  const getBounds = (size,deg,pos,aspect)=>{
-    const r = Math.abs((size/2)/Math.sin(aspect[2]))
-    const rotate_x = aspect.map((e)=>[r*Math.cos((deg.z+e)*(Math.PI/180)),r*Math.sin((deg.z+e)*(Math.PI/180)),0])
+  const getBounds = (size,deg,pos,aspect,imgSize,trimSize)=>{
+    const {width:img_width,height:img_height} = imgSize
+    const {x:trim_x,y:trim_y,width:trim_width,height:trim_height} = trimSize
+    const trimpos = [
+      {x:trim_x-(img_width/2),y:(img_height/2)-(trim_y+trim_height)},
+      {x:trim_x-(img_width/2),y:(img_height/2)-trim_y},
+      {x:(trim_x+trim_width)-(img_width/2),y:(img_height/2)-trim_y},
+      {x:(trim_x+trim_width)-(img_width/2),y:(img_height/2)-(trim_y+trim_height)}
+    ]
+    const trimadeg = trimpos.map((e)=>Math.atan2(e.y,e.x)*180/Math.PI)
+    const rate = size/img_width
+    const radius = trimpos.map((e,i)=>((e.x*rate)/Math.cos(trimadeg[i]*(Math.PI/180))))
+    const rotate_x = trimadeg.map((e,i)=>[radius[i]*Math.cos((deg.z+e)*(Math.PI/180)),radius[i]*Math.sin((deg.z+e)*(Math.PI/180)),0])
+    /*const rateSize = rate*size
+    const r = (rateSize/2)/Math.cos(aspect[2]*(Math.PI/180))
+    const rotate_x = aspect.map((e)=>[r*Math.cos((deg.z+e)*(Math.PI/180)),r*Math.sin((deg.z+e)*(Math.PI/180)),0])*/
     const rotate_y = rotate_x.map((e)=>{
       return [e[0],e[1]*Math.cos((deg.x)*(Math.PI/180)),e[1]*Math.sin((deg.x)*(Math.PI/180))]
     })
@@ -131,17 +144,23 @@ const App = (props)=>{
   React.useEffect(()=>{
     if(imgIdIdx === -1){
       const workBounds = []
-      const length = Math.min(size3d.length,deg3d.length,pos3d.length,aspect.length)
+      const wkupdate = [...update]
+      const length = Math.min(size3d.length,deg3d.length,pos3d.length,aspect.length,trimSize.length,update.length)
       for(let i=0; i<length; i=i+1){
-        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i],aspect[i])
+        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i],aspect[i],imgSize[i],trimSize[i])
+        wkupdate[i] = update[i]?0:1
       }
       setBounds(workBounds)
+      setUpdate(wkupdate)
     }else{
       const workBounds = [...bounds]
-      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx],aspect[imgIdIdx])
+      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx],aspect[imgIdIdx],imgSize[imgIdIdx],trimSize[imgIdIdx])
       setBounds(workBounds)
+      const wkupdate = [...update]
+      wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
+      setUpdate(wkupdate)
     }
-  },[imgIdIdx,size3d,deg3d,pos3d,aspect])
+  },[dispStart,imgIdIdx,size3d,deg3d,pos3d,aspect,imgSize,trimSize])
 
   React.useEffect(()=>{
     if(imgDispSize.every((el)=>el.width>0 && el.height>0)){
@@ -162,14 +181,16 @@ const App = (props)=>{
     setImgRef(wkImgRef)
     setImgSize(workImgSize)
     setImgDispSize(workImgDispSize)
-    setAspect(workaspect)
     for(let i=0; i<imglist.length; i=i+1){
       if(imglist[i].trim !== undefined){
         workTrimmSize[i] = imglist[i].trim
+        const deg = Math.atan2(imglist[i].trim.height,imglist[i].trim.width)*180/Math.PI
+        workaspect[i] = [180+deg,180-deg,deg,360-deg]
       }
     }
+    setAspect(workaspect)
     setTrimSize(workTrimmSize)
-  },[now])
+  },[now,imglist])
 
   React.useEffect(()=>{
     const workCanvasRef = document.getElementsByClassName('canvas_handler')
@@ -181,7 +202,7 @@ const App = (props)=>{
     }
     setContext(workContext)
     setCanvasRef(workCanvasRef)
-  },[now])
+  },[now,imglist])
 
   React.useEffect(()=>{
     if(dispStart && imgRef.length > 0 && canvasRef.length > 0 && imgRef.length === canvasRef.length){
@@ -190,13 +211,13 @@ const App = (props)=>{
           const {width:dspwidth,height:dspheight} = imgDispSize[i] !== undefined ? imgDispSize[i] : {width:0,height:0}
           const {x,y,width:trimwidth,height:trimheight} = trimSize[i]
           context[i].clearRect(0,0,dspwidth,dspheight)
-          context[i].drawImage(imgRef[i], x, y, trimwidth, trimheight, x, y, trimwidth, trimheight)
+          context[i].drawImage(imgRef[i], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
         }
       }else{
         const {width:dspwidth,height:dspheight} = imgDispSize[imgIdIdx] !== undefined ? imgDispSize[imgIdIdx] : {width:0,height:0}
         const {x,y,width:trimwidth,height:trimheight} = trimSize[imgIdIdx]
         context[imgIdIdx].clearRect(0,0,dspwidth,dspheight)
-        context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, x, y, trimwidth, trimheight)
+        context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
       }
     }
   },[dispStart,imgDispSize,trimSize])
@@ -225,9 +246,10 @@ const App = (props)=>{
     return imglist.map((element,idx)=>{
       const {width,height} = imgSize[idx] !== undefined ? imgSize[idx] : {width:0,height:0}
       const {width:dspwidth,height:dspheight} = imgDispSize[idx] !== undefined ? imgDispSize[idx] : {width:0,height:0}
+      const {x,y,width:trimwidth,height:trimheight} = trimSize[idx] !== undefined ? trimSize[idx] : {x:0,y:0,width:0,height:0}
       return(<div key={idx}>
         <img draggable={false} className='img_handler' src={element.src} width={`${width?width:dspwidth}px`} height={`${height?height:dspheight}px`}/>
-        <canvas className='canvas_handler' width={`${dspwidth}px`} height={`${dspheight}px`} ></canvas>
+        <canvas className='canvas_handler' width={`${trimwidth}px`} height={`${trimheight}px`} ></canvas>
       </div>)
     })
   }
@@ -264,7 +286,7 @@ const App = (props)=>{
         imgId={imgId} setImgId={setImgId} imgIdIdx={imgIdIdx} setImgIdIdx={setImgIdIdx} imgSize={imgSize}
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
-        srclist={srclist} getOutputData={getOutputData} />
+        srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'z', fov: 50})}

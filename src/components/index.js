@@ -57,7 +57,7 @@ export default class Controller extends React.Component {
   }
 }
 const TransformController = (props)=>{
-  const {imgId, setImgId, imgIdIdx, size3d, deg3d, pos3d,
+  const {imgId, setImgId, imgIdIdx, size3d, deg3d, pos3d, aspect, setAspect,
     imgSize, trimSize, setTrimSize, update, setUpdate, srclist } = props
   const [wkTrimSize, setWktrimSize] = useState([])
 
@@ -136,9 +136,10 @@ const TransformController = (props)=>{
       height:imgSize[imgIdIdx].height-value-reftrimSize.bottom,
     }
     setTrimSize(setTrimmSize)
-    const wkupdate = [...update]
-    wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
-    setUpdate(wkupdate)
+    const workaspect = [...aspect]
+    const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
+    workaspect[imgIdIdx] = [180+deg,180-deg,deg,360-deg]
+    setAspect(workaspect)
   }
 
   const onChangeTrimBottom = (e)=>{
@@ -152,9 +153,10 @@ const TransformController = (props)=>{
       height:imgSize[imgIdIdx].height-value-reftrimSize.top,
     }
     setTrimSize(setTrimmSize)
-    const wkupdate = [...update]
-    wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
-    setUpdate(wkupdate)
+    const workaspect = [...aspect]
+    const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
+    workaspect[imgIdIdx] = [180+deg,180-deg,deg,360-deg]
+    setAspect(workaspect)
   }
 
   const onChangeTrimLeft = (e)=>{
@@ -168,9 +170,10 @@ const TransformController = (props)=>{
       height:reftrimSize.height,
     }
     setTrimSize(setTrimmSize)
-    const wkupdate = [...update]
-    wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
-    setUpdate(wkupdate)
+    const workaspect = [...aspect]
+    const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
+    workaspect[imgIdIdx] = [180+deg,180-deg,deg,360-deg]
+    setAspect(workaspect)
   }
 
   const onChangeTrimRight = (e)=>{
@@ -184,9 +187,10 @@ const TransformController = (props)=>{
       height:reftrimSize.height,
     }
     setTrimSize(setTrimmSize)
-    const wkupdate = [...update]
-    wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
-    setUpdate(wkupdate)
+    const workaspect = [...aspect]
+    const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
+    workaspect[imgIdIdx] = [180+deg,180-deg,deg,360-deg]
+    setAspect(workaspect)
   }
 
   const onClick = ()=>{
