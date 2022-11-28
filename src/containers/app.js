@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import DeckGL from '@deck.gl/react';
-import { LineLayer, COORDINATE_SYSTEM, OrbitView, BitmapLayer } from 'deck.gl';
+import { LineLayer, COORDINATE_SYSTEM, OrbitView, BitmapLayer, SimpleMeshLayer } from 'deck.gl';
 import {
   Container, connectToHarmowareVis, LoadingIcon, FpsDisplay
 } from 'harmoware-vis';
 import Controller from '../components';
+import {registerLoaders} from '@loaders.gl/core';
+import {OBJLoader} from '@loaders.gl/obj';
+
+registerLoaders([OBJLoader]);
 
 //const MAPBOX_TOKEN = process.env.MAPBOX_ACCESS_TOKEN; //Acquire Mapbox accesstoken
 //const titleimg = '../../data/title.png';
 //const titleimg2 = '../../data/title2.png';
 //const imglist = [{src:titleimg2},{src:titleimg2},{src:titleimg2},{src:titleimg2},{src:titleimg2}]
+
+const obj_1F = 'data/p_tokai_1F_joined.obj';
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
@@ -305,6 +311,17 @@ const App = (props)=>{
                 widthMinPixels: 1,
                 getColor: (x) => x.color || [255,255,255,255],
                 opacity: 1,
+              }),
+              new SimpleMeshLayer({
+                id:'obj_1F',
+                data:[{position:[0,0,0]}],
+                mesh:obj_1F,
+                coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
+                getColor:[0,255,255,255],
+                getOrientation:[0,90,90],
+                getTranslation:[-100,0,0],
+                getScale:[2.5,2.5,2.5],
+                opacity: 1.0,
               }),
               getLayers()
           ]}
