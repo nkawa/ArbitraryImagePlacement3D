@@ -19,7 +19,7 @@ const obj_1F = 'data/p_tokai_1F_joined.obj';
 
 const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
-  rotationX: 0,
+  rotationX: 45,
   rotationOrbit: 0,
   zoom: 2.5
 };
@@ -292,8 +292,8 @@ const App = (props)=>{
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect} />
       <div className="harmovis_area">
       <DeckGL
-          views={new OrbitView({orbitAxis: 'z', fov: 50})}
-          viewState={viewState} controller={{scrollZoom:{smooth:true},dragMode:'pan'}}
+          views={new OrbitView({orbitAxis: 'Z', fov: 50})}
+          viewState={viewState} controller={{scrollZoom:{smooth:true}}}
           onViewStateChange={v => updateViewState(v.viewState)}
           layers={[
               new LineLayer({

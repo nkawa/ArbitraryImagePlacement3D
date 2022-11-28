@@ -17,7 +17,7 @@ export default class Controller extends React.Component {
       case 'reset': {
         updateViewState({
           target: [0, 0, 0],
-          rotationX: 0,
+          rotationX: 45,
           rotationOrbit: 0,
           zoom: 2.5,
           transitionDuration: 200,
