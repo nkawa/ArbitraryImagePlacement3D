@@ -59,7 +59,7 @@ const App = (props)=>{
     }
   },[imgId])
 
-  const getBounds = (size,deg,pos,aspect,imgSize,trimSize)=>{
+  const getBounds = (size,deg,pos,imgSize,trimSize)=>{
     const {width:img_width,height:img_height} = imgSize
     const {x:trim_x,y:trim_y,width:trim_width,height:trim_height} = trimSize
     const trimpos = [
@@ -72,9 +72,6 @@ const App = (props)=>{
     const rate = size/img_width
     const radius = trimpos.map((e,i)=>((e.x*rate)/Math.cos(trimadeg[i]*(Math.PI/180))))
     const rotate_x = trimadeg.map((e,i)=>[radius[i]*Math.cos((deg.z+e)*(Math.PI/180)),radius[i]*Math.sin((deg.z+e)*(Math.PI/180)),0])
-    /*const rateSize = rate*size
-    const r = (rateSize/2)/Math.cos(aspect[2]*(Math.PI/180))
-    const rotate_x = aspect.map((e)=>[r*Math.cos((deg.z+e)*(Math.PI/180)),r*Math.sin((deg.z+e)*(Math.PI/180)),0])*/
     const rotate_y = rotate_x.map((e)=>{
       return [e[0],e[1]*Math.cos((deg.x)*(Math.PI/180)),e[1]*Math.sin((deg.x)*(Math.PI/180))]
     })
@@ -145,22 +142,22 @@ const App = (props)=>{
     if(imgIdIdx === -1){
       const workBounds = []
       const wkupdate = [...update]
-      const length = Math.min(size3d.length,deg3d.length,pos3d.length,aspect.length,trimSize.length,update.length)
+      const length = Math.min(size3d.length,deg3d.length,pos3d.length,trimSize.length,update.length)
       for(let i=0; i<length; i=i+1){
-        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i],aspect[i],imgSize[i],trimSize[i])
+        workBounds[i] = getBounds(size3d[i],deg3d[i],pos3d[i],imgSize[i],trimSize[i])
         wkupdate[i] = update[i]?0:1
       }
       setBounds(workBounds)
       setUpdate(wkupdate)
     }else{
       const workBounds = [...bounds]
-      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx],aspect[imgIdIdx],imgSize[imgIdIdx],trimSize[imgIdIdx])
+      workBounds[imgIdIdx] = getBounds(size3d[imgIdIdx],deg3d[imgIdIdx],pos3d[imgIdIdx],imgSize[imgIdIdx],trimSize[imgIdIdx])
       setBounds(workBounds)
       const wkupdate = [...update]
       wkupdate[imgIdIdx] = update[imgIdIdx]?0:1
       setUpdate(wkupdate)
     }
-  },[dispStart,imgIdIdx,size3d,deg3d,pos3d,aspect,imgSize,trimSize])
+  },[dispStart,imgIdIdx,size3d,deg3d,pos3d,imgSize,trimSize])
 
   React.useEffect(()=>{
     if(imgDispSize.every((el)=>el.width>0 && el.height>0)){
