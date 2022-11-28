@@ -1,13 +1,13 @@
 {
-  "name": "harmoware-vis-3d-text",
+  "name": "arbitrary-image-placement3d",
   "version": "1.0.0",
-  "description": "Harmoware-VIS-3D-Text",
+  "description": "ArbitraryImagePlacement3D",
   "main": "index.js",
   "scripts": {
     "start": "webpack-cli serve --port 3030 --open --mode development",
     "build": "webpack --mode production"
   },
-  "author": "Harmoware-VIS-3D-Text",
+  "author": "ArbitraryImagePlacement3D",
   "license": "MIT",
   "dependencies": {
     "@babel/core": "7.18.6",
