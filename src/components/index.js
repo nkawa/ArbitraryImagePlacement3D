@@ -19,7 +19,7 @@ export default class Controller extends React.Component {
           target: [0, 0, 0],
           rotationX: 45,
           rotationOrbit: 0,
-          zoom: 2.5,
+          zoom: 3.0,
           transitionDuration: 200,
         })
         break

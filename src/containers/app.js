@@ -21,7 +21,7 @@ const INITIAL_VIEW_STATE = {
   target: [0, 0, 0],
   rotationX: 45,
   rotationOrbit: 0,
-  zoom: 2.5
+  zoom: 3.0
 };
 
 const App = (props)=>{
@@ -341,8 +341,8 @@ const App = (props)=>{
                 coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
                 getColor:[0,255,255,255],
                 getOrientation:[0,-90,90],
-                getTranslation:[100,0,0],
-                getScale:[2.5,2.5,2.5],
+                getTranslation:[75,0,0],
+                getScale:[1.7,1.7,1.7],
                 opacity: 1.0,
               }),
               getLayers()
