@@ -28,6 +28,7 @@ const App = (props)=>{
   const [now, setNow] = React.useState(new Date())
   const [dispStart, setDispStart] = React.useState(false)
   const [imglist, setImgList] = React.useState([])
+  const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
@@ -46,6 +47,7 @@ const App = (props)=>{
   const [deg3d, setDeg3d] = useState([])
   const [pos3d, setPos3d] = useState([])
   const [aspect, setAspect] = useState([])
+  const [z_order, setzOrder] = useState([])
 
   const { actions, viewport, loading } = props;
 
@@ -99,6 +101,7 @@ const App = (props)=>{
     const workdeg3d = []
     const workpos3d = []
     const workaspect = []
+    const workzOrder = []
     for(let i=0; i<imglist.length; i=i+1){
       const img = imglist[i]
       const shift = i%10
@@ -111,6 +114,7 @@ const App = (props)=>{
       workdeg3d.push(img.deg !== undefined ? img.deg : {x:0, y:0, z:0})
       workpos3d.push(img.pos !== undefined ? img.pos : {x:(shift*10-50), y:(shift*10-50), z:i*2})
       workaspect.push([0,0,0,0])
+      workzOrder.push(100)
     }
     setSrcList(worksrclist)
     setCanvasRef(workcanvasRef)
@@ -122,6 +126,7 @@ const App = (props)=>{
     setDeg3d(workdeg3d)
     setPos3d(workpos3d)
     setAspect(workaspect)
+    setzOrder(workzOrder)
     setImgId(null)
     setImgIdIdx(-1)
   }
@@ -147,6 +152,12 @@ const App = (props)=>{
       setDispStart(false)
     }
   },[imglist])
+
+  React.useEffect(()=>{
+    const wklayerlist = imglist.map((e,i)=>({idx:i,z_order:z_order[i]}))
+    wklayerlist.sort((a, b) => (a.z_order - b.z_order))
+    setLayerList(wklayerlist)
+  },[imglist,z_order])
 
   React.useEffect(()=>{
     if(imgIdIdx === -1){
@@ -178,12 +189,14 @@ const App = (props)=>{
     const workImgDispSize = []
     const workTrimmSize = []
     const workaspect = []
+    const workzOrder = []
     for(let i=0; i<wkImgRef.length; i=i+1){
       workImgSize.push({width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
       const deg = Math.atan2(wkImgRef[i].naturalHeight,wkImgRef[i].naturalWidth)*180/Math.PI
       workaspect.push([180+deg,180-deg,deg,360-deg])
       workImgDispSize.push({width:wkImgRef[i].clientWidth,height:wkImgRef[i].clientHeight})
       workTrimmSize.push({x:0,y:0,width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
+      workzOrder.push(100)
     }
     setImgRef(wkImgRef)
     setImgSize(workImgSize)
@@ -194,8 +207,12 @@ const App = (props)=>{
         const deg = Math.atan2(imglist[i].trim.height,imglist[i].trim.width)*180/Math.PI
         workaspect[i] = [180+deg,180-deg,deg,360-deg]
       }
+      if(imglist[i].z_order !== undefined){
+        workzOrder[i] = imglist[i].z_order
+      }
     }
     setAspect(workaspect)
+    setzOrder(workzOrder)
     setTrimSize(workTrimmSize)
   },[now,imglist])
 
@@ -235,11 +252,11 @@ const App = (props)=>{
 
   const getLayers = ()=>{
     if(dispStart){
-      return imglist.map((t,idx)=>{
+      return layerlist.map((e)=>{
         return new BitmapLayer({
-          id: `BitmapLayer-${idx}-${update[idx]}`,
-          image: canvasRef[idx],
-          bounds: bounds[idx],
+          id: `BitmapLayer-${e.idx}-${update[e.idx]}`,
+          image: canvasRef[e.idx],
+          bounds: bounds[e.idx],
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           pickable: true,
           onClick,
@@ -279,10 +296,10 @@ const App = (props)=>{
       if(deg3d[idx].x !== 0 || deg3d[idx].y !== 0 || deg3d[idx].z !== 0){
         data.deg = deg3d[idx]
       }
-      if(deg3d[idx].x !== 0 || deg3d[idx].y !== 0 || deg3d[idx].z !== 0){
-        data.deg = deg3d[idx]
-      }
       data.pos = pos3d[idx]
+      if(z_order[idx] !== 100){
+        data.z_order = z_order[idx]
+      }
       return data
     })
   }
@@ -293,7 +310,8 @@ const App = (props)=>{
         imgId={imgId} setImgId={setImgId} imgIdIdx={imgIdIdx} setImgIdIdx={setImgIdIdx} imgSize={imgSize}
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
-        srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect} />
+        srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
+        z_order={z_order} setzOrder={setzOrder} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}

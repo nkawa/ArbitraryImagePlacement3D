@@ -58,7 +58,7 @@ export default class Controller extends React.Component {
 }
 const TransformController = (props)=>{
   const {imgId, setImgId, imgIdIdx, size3d, deg3d, pos3d, aspect, setAspect,
-    imgSize, trimSize, setTrimSize, update, setUpdate, srclist } = props
+    imgSize, trimSize, setTrimSize, update, setUpdate, srclist, z_order } = props
   const [wkTrimSize, setWktrimSize] = useState([])
 
   React.useEffect(()=>{
@@ -75,6 +75,13 @@ const TransformController = (props)=>{
       }
     }))
   },[trimSize,imgSize])
+
+  const setZ_order = (e)=>{
+    const value = +e.target.value
+    const wkz_order = [...z_order]
+    wkz_order[imgIdIdx] = value
+    props.setzOrder(wkz_order)
+  }
 
   const setPos3d_x = (e)=>{
     const value = +e.target.value
@@ -201,6 +208,13 @@ const TransformController = (props)=>{
     <ul className="flex_list">
       <li className="flex_row">Image Item Control</li>
 
+      <li className="flex_row">
+        <label htmlFor="z_order">{`z_order :`}</label>
+        <input type="number" value={z_order[imgIdIdx]}
+          min={0} max={200} step={1}
+          onChange={setZ_order}
+          className="harmovis_input_number" id="z_order" />
+      </li>
       <li className="flex_row">
         <label htmlFor="pos_x">{`pos_x :`}</label>
         <input type="range" value={pos3d[imgIdIdx].x}
