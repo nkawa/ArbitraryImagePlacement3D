@@ -110,7 +110,7 @@ const App = (props)=>{
       workTrimmSize.push(img.trim !== undefined ? img.trim : {x:0,y:0,width:0,height:0})
       workcanvasRef.push(undefined)
       workupdate.push(0)
-      worksize3d.push(img.size !== undefined ? img.size : 30)
+      worksize3d.push(img.size !== undefined ? img.size : 20)
       workdeg3d.push(img.deg !== undefined ? img.deg : {x:0, y:0, z:0})
       workpos3d.push(img.pos !== undefined ? img.pos : {x:(shift*10-50), y:(shift*10-50), z:i*2})
       workaspect.push([0,0,0,0])
@@ -290,7 +290,7 @@ const App = (props)=>{
     return imglist.map((el,idx)=>{
       const data = {src: el.src}
       data.trim = trimSize[idx]
-      if(size3d[idx] !== 30){
+      if(size3d[idx] !== 20){
         data.size = size3d[idx]
       }
       if(deg3d[idx].x !== 0 || deg3d[idx].y !== 0 || deg3d[idx].z !== 0){
