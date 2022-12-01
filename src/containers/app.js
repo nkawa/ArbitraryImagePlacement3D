@@ -30,6 +30,7 @@ const App = (props)=>{
   const [imglist, setImgList] = React.useState([])
   const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
+  const [opacity, setOpacity] = React.useState(1)
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
   const [viewState, updateViewState] = useState(INITIAL_VIEW_STATE);
@@ -311,7 +312,7 @@ const App = (props)=>{
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
-        z_order={z_order} setzOrder={setzOrder} />
+        z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}
@@ -332,8 +333,9 @@ const App = (props)=>{
                 getWidth: 1,
                 widthMinPixels: 1,
                 getColor: (x) => x.color || [255,255,255,255],
-                opacity: 1,
+                opacity: opacity,
               }),
+              getLayers(),
               new SimpleMeshLayer({
                 id:'obj_1F',
                 data:[{position:[0,0,0]}],
@@ -341,11 +343,10 @@ const App = (props)=>{
                 coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
                 getColor:[0,255,255,255],
                 getOrientation:[0,-90,90],
-                getTranslation:[75,0,0],
+                getTranslation:[75,0,-0.5],
                 getScale:[1.7,1.7,1.7],
-                opacity: 1.0,
+                opacity: opacity,
               }),
-              getLayers()
           ]}
       />
       </div>
