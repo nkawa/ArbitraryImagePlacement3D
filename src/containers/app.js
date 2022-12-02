@@ -247,6 +247,15 @@ const App = (props)=>{
     }
   },[dispStart,imgDispSize,trimSize])
 
+  React.useEffect(()=>{
+    window.onkeydown = (e)=>{
+      if(e.isTrusted === true && e.altKey === false && e.code === "KeyH" && e.ctrlKey === false &&
+        e.key === "h" && e.keyCode === 72 && e.repeat === false && e.shiftKey === false && e.type === "keydown"){
+        App.panel = !App.panel
+      }
+    }
+  },[])
+
   const updateState = (updateData)=>{
     setState({...state, ...updateData})
   }
@@ -312,7 +321,7 @@ const App = (props)=>{
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
-        z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity} />
+        z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity} panel={App.panel} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}
@@ -376,4 +385,6 @@ const App = (props)=>{
   );
 }
 App.timeoutID = undefined
+App.panel = true
+
 export default connectToHarmowareVis(App);

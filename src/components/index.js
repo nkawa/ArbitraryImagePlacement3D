@@ -3,6 +3,11 @@ import {PlacementInput} from './placement-input'
 import {PlacementOutput} from './placement-output'
 
 export default class Controller extends React.Component {
+  constructor(props){
+    super(props)
+    this.divRef = React.createRef();
+  }
+
   onClick(buttonType){
     const { viewState, updateViewState } = this.props;
     switch (buttonType) {
@@ -27,6 +32,12 @@ export default class Controller extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps){
+    if(prevProps.panel !== this.props.panel){
+      this.divRef.current.hidden = !this.props.panel
+    }
+  }
+
   onChangeOpacity(e){
     const opacity = +e.target.value
     this.props.setOpacity(opacity)
@@ -40,7 +51,7 @@ export default class Controller extends React.Component {
   render() {
     const {setImgList, getOutputData, imgIdIdx, srclist, opacity } = this.props
     return (
-        <div className="harmovis_controller">
+        <div className="harmovis_controller" ref={this.divRef} >
             <div className='panel'><PlacementInput setImgList={setImgList}/></div>
             <div className='panel'><PlacementOutput getOutputData={getOutputData}/></div>
             <ul className="flex_list">
