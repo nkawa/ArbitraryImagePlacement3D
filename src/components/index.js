@@ -84,8 +84,7 @@ export default class Controller extends React.Component {
   }
 }
 const TransformController = (props)=>{
-  const {imgId, setImgId, imgIdIdx, size3d, deg3d, pos3d, aspect, setAspect,
-    imgSize, trimSize, setTrimSize, update, setUpdate, srclist, z_order } = props
+  const {imgId, imgIdIdx, imgSize, trimSize } = props
   const [wkTrimSize, setWktrimSize] = useState([])
 
   React.useEffect(()=>{
