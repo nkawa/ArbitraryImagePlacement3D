@@ -84,23 +84,7 @@ export default class Controller extends React.Component {
   }
 }
 const TransformController = (props)=>{
-  const {imgId, imgIdIdx, imgSize, trimSize } = props
-  const [wkTrimSize, setWktrimSize] = useState([])
-
-  React.useEffect(()=>{
-    setWktrimSize(trimSize.map((e,i)=>{
-      const {x,y,width,height} = e
-      const {width:basewidth,height:baseheight} = imgSize[i]
-      return {
-        left:x,
-        right:basewidth-x-width,
-        width:width,
-        top:y,
-        bottom:baseheight-y-height,
-        height:height
-      }
-    }))
-  },[trimSize,imgSize])
+  const {imgId, imgIdIdx } = props
 
   return (<>{imgId === null || imgIdIdx === -1 ? null:
     <ul className="flex_list">
@@ -118,10 +102,10 @@ const TransformController = (props)=>{
 
       <SizeController {...props} />
 
-      <TrimTopController {...props} wkTrimSize={wkTrimSize} />
-      <TrimBottomController {...props} wkTrimSize={wkTrimSize} />
-      <TrimLeftController {...props} wkTrimSize={wkTrimSize} />
-      <TrimRightController {...props} wkTrimSize={wkTrimSize} />
+      <TrimTopController {...props} />
+      <TrimBottomController {...props} />
+      <TrimLeftController {...props} />
+      <TrimRightController {...props} />
 
       <ReleaseButton {...props}/>
     </ul>
@@ -225,18 +209,14 @@ const SizeController = (props)=>{
   )
 }
 const TrimTopController = (props)=>{
-  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize, wkTrimSize } = props
+  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize } = props
+  const bottom = imgSize[imgIdIdx].height-trimSize[imgIdIdx].y-trimSize[imgIdIdx].height
 
   const onChangeTrimTop = (e)=>{
-    const value = +e.target.value
-    const reftrimSize = wkTrimSize[imgIdIdx]
+    const top = +e.target.value
     const setTrimmSize = [...trimSize]
-    setTrimmSize[imgIdIdx] = {
-      x:reftrimSize.left,
-      y:value,
-      width:reftrimSize.width,
-      height:imgSize[imgIdIdx].height-value-reftrimSize.bottom,
-    }
+    setTrimmSize[imgIdIdx].y = top
+    setTrimmSize[imgIdIdx].height = imgSize[imgIdIdx].height-top-bottom
     setTrimSize(setTrimmSize)
     const workaspect = [...aspect]
     const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
@@ -247,31 +227,27 @@ const TrimTopController = (props)=>{
   return (<>{useMemo(()=>
     <li className="flex_row">
       <label htmlFor="trim_top">{`trim_top :`}</label>
-      <input type="range" value={wkTrimSize[imgIdIdx].top}
-        min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].bottom} step={1}
+      <input type="range" value={trimSize[imgIdIdx].y}
+        min={0} max={imgSize[imgIdIdx].height-bottom} step={1}
         onChange={onChangeTrimTop}
         className="harmovis_input_range" id="trim_top" />:
-      <input type="number" value={wkTrimSize[imgIdIdx].top}
-        min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].bottom} step={1}
+      <input type="number" value={trimSize[imgIdIdx].y}
+        min={0} max={imgSize[imgIdIdx].height-bottom} step={1}
         onChange={onChangeTrimTop}
         className="harmovis_input_number" id="trim_top" />px
     </li>
-    ,[wkTrimSize[imgIdIdx].top,wkTrimSize[imgIdIdx].bottom,imgIdIdx,imgSize[imgIdIdx].height])}</>
+    ,[trimSize[imgIdIdx].y,bottom,imgIdIdx,imgSize[imgIdIdx].height])}</>
   )
 }
 const TrimBottomController = (props)=>{
-  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize, wkTrimSize } = props
+  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize } = props
+  const top = trimSize[imgIdIdx].y
+  const dspbottom = imgSize[imgIdIdx].height-top-trimSize[imgIdIdx].height
 
   const onChangeTrimBottom = (e)=>{
-    const value = +e.target.value
-    const reftrimSize = wkTrimSize[imgIdIdx]
+    const bottom = +e.target.value
     const setTrimmSize = [...trimSize]
-    setTrimmSize[imgIdIdx] = {
-      x:reftrimSize.left,
-      y:reftrimSize.top,
-      width:reftrimSize.width,
-      height:imgSize[imgIdIdx].height-value-reftrimSize.top,
-    }
+    setTrimmSize[imgIdIdx].height = imgSize[imgIdIdx].height-bottom-top
     setTrimSize(setTrimmSize)
     const workaspect = [...aspect]
     const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
@@ -282,31 +258,27 @@ const TrimBottomController = (props)=>{
   return (<>{useMemo(()=>
     <li className="flex_row">
       <label htmlFor="trim_bottom">{`trim_bottom :`}</label>
-      <input type="range" value={wkTrimSize[imgIdIdx].bottom}
-        min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].top} step={1}
+      <input type="range" value={dspbottom}
+        min={0} max={imgSize[imgIdIdx].height-trimSize[imgIdIdx].y} step={1}
         onChange={onChangeTrimBottom}
         className="harmovis_input_range" id="trim_bottom" />:
-      <input type="number" value={wkTrimSize[imgIdIdx].bottom}
-        min={0} max={imgSize[imgIdIdx].height-wkTrimSize[imgIdIdx].top} step={1}
+      <input type="number" value={dspbottom}
+        min={0} max={imgSize[imgIdIdx].height-trimSize[imgIdIdx].y} step={1}
         onChange={onChangeTrimBottom}
         className="harmovis_input_number" id="trim_bottom" />px
     </li>
-    ,[wkTrimSize[imgIdIdx].top,wkTrimSize[imgIdIdx].bottom,imgIdIdx,imgSize[imgIdIdx].height])}</>
+    ,[trimSize[imgIdIdx].y,dspbottom,imgIdIdx,imgSize[imgIdIdx].height])}</>
   )
 }
 const TrimLeftController = (props)=>{
-  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize, wkTrimSize } = props
+  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize } = props
+  const right = imgSize[imgIdIdx].width-trimSize[imgIdIdx].x-trimSize[imgIdIdx].width
 
   const onChangeTrimLeft = (e)=>{
-    const value = +e.target.value
-    const reftrimSize = wkTrimSize[imgIdIdx]
+    const left = +e.target.value
     const setTrimmSize = [...trimSize]
-    setTrimmSize[imgIdIdx] = {
-      x:value,
-      y:reftrimSize.top,
-      width:imgSize[imgIdIdx].width-value-reftrimSize.right,
-      height:reftrimSize.height,
-    }
+    setTrimmSize[imgIdIdx].x = left
+    setTrimmSize[imgIdIdx].width = imgSize[imgIdIdx].width-left-right
     setTrimSize(setTrimmSize)
     const workaspect = [...aspect]
     const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
@@ -317,31 +289,27 @@ const TrimLeftController = (props)=>{
   return (<>{useMemo(()=>
     <li className="flex_row">
       <label htmlFor="trim_left">{`trim_left :`}</label>
-      <input type="range" value={wkTrimSize[imgIdIdx].left}
-        min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].right} step={1}
+      <input type="range" value={trimSize[imgIdIdx].x}
+        min={0} max={imgSize[imgIdIdx].width-right} step={1}
         onChange={onChangeTrimLeft}
         className="harmovis_input_range" id="trim_left" />:
-      <input type="number" value={wkTrimSize[imgIdIdx].left}
-        min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].right} step={1}
+      <input type="number" value={trimSize[imgIdIdx].x}
+        min={0} max={imgSize[imgIdIdx].width-right} step={1}
         onChange={onChangeTrimLeft}
         className="harmovis_input_number" id="trim_left" />px
     </li>
-    ,[wkTrimSize[imgIdIdx].left,wkTrimSize[imgIdIdx].right,imgIdIdx,imgSize[imgIdIdx].width])}</>
+    ,[trimSize[imgIdIdx].x,right,imgIdIdx,imgSize[imgIdIdx].width])}</>
   )
 }
 const TrimRightController = (props)=>{
-  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize, wkTrimSize } = props
+  const { imgIdIdx, aspect, setAspect, imgSize, trimSize, setTrimSize } = props
+  const left = trimSize[imgIdIdx].x
+  const dspright = imgSize[imgIdIdx].width-left-trimSize[imgIdIdx].width
 
   const onChangeTrimRight = (e)=>{
-    const value = +e.target.value
-    const reftrimSize = wkTrimSize[imgIdIdx]
+    const right = +e.target.value
     const setTrimmSize = [...trimSize]
-    setTrimmSize[imgIdIdx] = {
-      x:reftrimSize.left,
-      y:reftrimSize.top,
-      width:imgSize[imgIdIdx].width-value-reftrimSize.left,
-      height:reftrimSize.height,
-    }
+    setTrimmSize[imgIdIdx].width = imgSize[imgIdIdx].width-right-left
     setTrimSize(setTrimmSize)
     const workaspect = [...aspect]
     const deg = Math.atan2(setTrimmSize[imgIdIdx].height,setTrimmSize[imgIdIdx].width)*180/Math.PI
@@ -352,16 +320,16 @@ const TrimRightController = (props)=>{
   return (<>{useMemo(()=>
     <li className="flex_row">
       <label htmlFor="trim_right">{`trim_right :`}</label>
-      <input type="range" value={wkTrimSize[imgIdIdx].right}
-        min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].left} step={1}
+      <input type="range" value={dspright}
+        min={0} max={imgSize[imgIdIdx].width-trimSize[imgIdIdx].x} step={1}
         onChange={onChangeTrimRight}
         className="harmovis_input_range" id="trim_right" />:
-      <input type="number" value={wkTrimSize[imgIdIdx].right}
-        min={0} max={imgSize[imgIdIdx].width-wkTrimSize[imgIdIdx].left} step={1}
+      <input type="number" value={dspright}
+        min={0} max={imgSize[imgIdIdx].width-trimSize[imgIdIdx].x} step={1}
         onChange={onChangeTrimRight}
         className="harmovis_input_number" id="trim_right" />px
     </li>
-    ,[wkTrimSize[imgIdIdx].left,wkTrimSize[imgIdIdx].right,imgIdIdx,imgSize[imgIdIdx].width])}</>
+    ,[dspright,trimSize[imgIdIdx].x,imgIdIdx,imgSize[imgIdIdx].width])}</>
   )
 }
 const ReleaseButton = (props)=>{
