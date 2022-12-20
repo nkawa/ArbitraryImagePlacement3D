@@ -45,7 +45,11 @@ export default class Controller extends React.Component {
 
   onChangeSelect(e){
     const imgIdIdx = +e.target.value
-    this.props.setImgId(`BitmapLayer-${imgIdIdx}-${this.props.update[imgIdIdx]}`)
+    if(imgIdIdx < 0){
+      this.props.setImgId(null)
+    }else{
+      this.props.setImgId(`BitmapLayer-${imgIdIdx}-${this.props.update[imgIdIdx]}`)
+    }
   }
 
   render() {
