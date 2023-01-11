@@ -148,7 +148,7 @@ const App = (props)=>{
       App.timeoutID = undefined
     }
     if(imglist.length > 0){
-      App.timeoutID = setTimeout(()=>{setDispStart(true)},1500);
+      App.timeoutID = setTimeout(()=>{setDispStart(true)},10000);
     }else{
       setDispStart(false)
     }
