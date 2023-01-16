@@ -161,8 +161,8 @@ const App = (props)=>{
       App.timeoutID2 = undefined
     }
     if(dispStart){
-      App.timeoutID2 = setTimeout(()=>{setDispStart2(true)},100);
-      setTimeout(()=>{layerUpdate(update)},1100);
+      App.timeoutID2 = setTimeout(()=>{setDispStart2(true)},1000);
+      setTimeout(()=>{layerUpdate(update)},2000);
     }else{
       setDispStart2(false)
     }
