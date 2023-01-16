@@ -27,6 +27,7 @@ const INITIAL_VIEW_STATE = {
 const App = (props)=>{
   const [now, setNow] = React.useState(new Date())
   const [dispStart, setDispStart] = React.useState(false)
+  const [dispStart2, setDispStart2] = React.useState(false)
   const [imglist, setImgList] = React.useState([])
   const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
@@ -148,11 +149,23 @@ const App = (props)=>{
       App.timeoutID = undefined
     }
     if(imglist.length > 0){
-      App.timeoutID = setTimeout(()=>{setDispStart(true)},10000);
+      App.timeoutID = setTimeout(()=>{setDispStart(true)},100000);
     }else{
       setDispStart(false)
     }
   },[imglist])
+
+  React.useEffect(()=>{
+    if(App.timeoutID2){
+      clearTimeout(App.timeoutID2)
+      App.timeoutID2 = undefined
+    }
+    if(dispStart){
+      App.timeoutID2 = setTimeout(()=>{setDispStart2(true)},1000);
+    }else{
+      setDispStart2(false)
+    }
+  },[dispStart])
 
   React.useEffect(()=>{
     const wklayerlist = imglist.map((e,i)=>({idx:i,z_order:z_order[i]}))
@@ -182,7 +195,26 @@ const App = (props)=>{
   },[dispStart,imgIdIdx,size3d,deg3d,pos3d,imgSize,trimSize])
 
   React.useEffect(()=>{
+    const wkupdate = [...update]
+    const length = update.length
+    for(let i=0; i<length; i=i+1){
+      wkupdate[i] = update[i]?0:1
+    }
+    setUpdate(wkupdate)
+  },[now])
+
+  React.useEffect(()=>{
+    if(imgDispSize.length === 0){
+      return
+    }
     if(imgDispSize.every((el)=>el.width>0 && el.height>0)){
+      if(App.timeoutID){
+        clearTimeout(App.timeoutID)
+        App.timeoutID = undefined
+      }
+      if(!dispStart){
+        setDispStart(true)
+      }
       return
     }
     const wkImgRef = document.getElementsByClassName('img_handler')
@@ -245,7 +277,7 @@ const App = (props)=>{
         context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
       }
     }
-  },[dispStart,imgDispSize,trimSize])
+  },[dispStart,imgDispSize,trimSize,now])
 
   React.useEffect(()=>{
     window.onkeydown = (e)=>{
@@ -261,7 +293,7 @@ const App = (props)=>{
   }
 
   const getLayers = ()=>{
-    if(dispStart){
+    if(dispStart2){
       return layerlist.map((e)=>{
         return new BitmapLayer({
           id: `BitmapLayer-${e.idx}-${update[e.idx]}`,
@@ -385,6 +417,7 @@ const App = (props)=>{
   );
 }
 App.timeoutID = undefined
+App.timeoutID2 = undefined
 App.panel = true
 
 export default connectToHarmowareVis(App);
