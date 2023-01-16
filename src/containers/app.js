@@ -161,11 +161,21 @@ const App = (props)=>{
       App.timeoutID2 = undefined
     }
     if(dispStart){
-      App.timeoutID2 = setTimeout(()=>{setDispStart2(true)},1000);
+      App.timeoutID2 = setTimeout(()=>{setDispStart2(true)},100);
+      setTimeout(()=>{layerUpdate(update)},1100);
     }else{
       setDispStart2(false)
     }
   },[dispStart])
+
+  const layerUpdate = (update)=>{
+    const wkupdate = [...update]
+    const length = update.length
+    for(let i=0; i<length; i=i+1){
+      wkupdate[i] = update[i]?0:1
+    }
+    setUpdate(wkupdate)
+  }
 
   React.useEffect(()=>{
     const wklayerlist = imglist.map((e,i)=>({idx:i,z_order:z_order[i]}))
@@ -193,15 +203,6 @@ const App = (props)=>{
       setUpdate(wkupdate)
     }
   },[dispStart,imgIdIdx,size3d,deg3d,pos3d,imgSize,trimSize])
-
-  React.useEffect(()=>{
-    const wkupdate = [...update]
-    const length = update.length
-    for(let i=0; i<length; i=i+1){
-      wkupdate[i] = update[i]?0:1
-    }
-    setUpdate(wkupdate)
-  },[now])
 
   React.useEffect(()=>{
     if(imgDispSize.length === 0){
@@ -277,7 +278,7 @@ const App = (props)=>{
         context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
       }
     }
-  },[dispStart,imgDispSize,trimSize,now])
+  },[dispStart,imgDispSize,trimSize])
 
   React.useEffect(()=>{
     window.onkeydown = (e)=>{
