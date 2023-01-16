@@ -148,7 +148,7 @@ const App = (props)=>{
       App.timeoutID = undefined
     }
     if(imglist.length > 0){
-      App.timeoutID = setTimeout(()=>{setDispStart(true)},10000);
+      App.timeoutID = setTimeout(()=>{setDispStart(true)},100000);
     }else{
       setDispStart(false)
     }
@@ -182,7 +182,17 @@ const App = (props)=>{
   },[dispStart,imgIdIdx,size3d,deg3d,pos3d,imgSize,trimSize])
 
   React.useEffect(()=>{
+    if(imgDispSize.length === 0){
+      return
+    }
     if(imgDispSize.every((el)=>el.width>0 && el.height>0)){
+      if(App.timeoutID){
+        clearTimeout(App.timeoutID)
+        App.timeoutID = undefined
+      }
+      if(!dispStart){
+        setDispStart(true)
+      }
       return
     }
     const wkImgRef = document.getElementsByClassName('img_handler')
