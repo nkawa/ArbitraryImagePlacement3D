@@ -255,7 +255,7 @@ const App = (props)=>{
         context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
       }
     }
-  },[dispStart,imgDispSize,trimSize])
+  },[dispStart,imgDispSize,trimSize,now])
 
   React.useEffect(()=>{
     window.onkeydown = (e)=>{
