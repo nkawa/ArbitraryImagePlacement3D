@@ -195,6 +195,15 @@ const App = (props)=>{
   },[dispStart,imgIdIdx,size3d,deg3d,pos3d,imgSize,trimSize])
 
   React.useEffect(()=>{
+    const wkupdate = [...update]
+    const length = update.length
+    for(let i=0; i<length; i=i+1){
+      wkupdate[i] = update[i]?0:1
+    }
+    setUpdate(wkupdate)
+  },[now])
+
+  React.useEffect(()=>{
     if(imgDispSize.length === 0){
       return
     }
