@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DeckGL from '@deck.gl/react';
-import { LineLayer, COORDINATE_SYSTEM, OrbitView, BitmapLayer, SimpleMeshLayer } from 'deck.gl';
+import { LineLayer, PathLayer, COORDINATE_SYSTEM, OrbitView, BitmapLayer, SimpleMeshLayer } from 'deck.gl';
 import {
   Container, connectToHarmowareVis, LoadingIcon, FpsDisplay
 } from 'harmoware-vis';
@@ -293,6 +293,19 @@ const App = (props)=>{
     setState({...state, ...updateData})
   }
 
+  const getPathLayers = ()=>{
+    if(imgIdIdx < 0){
+      return null
+    }
+    return new PathLayer({
+      id: `PathLayer-${imgIdIdx}}`,
+      data: [[bounds[imgIdIdx][0],bounds[imgIdIdx][1],bounds[imgIdIdx][2],bounds[imgIdIdx][3],bounds[imgIdIdx][0]]],
+      getPath: (x) => x,
+      getColor: ()=>[0,255,0,255],
+      getWidth: ()=>0.1,
+    })
+  }
+
   const getLayers = ()=>{
     if(dispStart2){
       return layerlist.map((e)=>{
@@ -378,6 +391,7 @@ const App = (props)=>{
                 opacity: opacity,
               }),
               getLayers(),
+              getPathLayers(),
               new SimpleMeshLayer({
                 id:'obj_1F',
                 data:[{position:[0,0,0]}],
