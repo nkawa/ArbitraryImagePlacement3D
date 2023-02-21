@@ -53,6 +53,10 @@ const App = (props)=>{
 
   const { actions, viewport, loading } = props;
 
+  React.useEffect(()=>{
+    setTimeout(()=>{InitialFileRead({setImgList})},1000)
+  },[])
+
   React.useEffect(function() {
     const intervalId = setInterval(function() {
       setNow(new Date());
@@ -436,3 +440,21 @@ App.timeoutID2 = undefined
 App.panel = true
 
 export default connectToHarmowareVis(App);
+
+const InitialFileRead = (props)=>{
+  const { setImgList } = props;
+  const request = new XMLHttpRequest();
+  request.open('GET', 'data/sampledataNew.json');
+  request.responseType = 'text';
+  request.send();
+  request.onload = function() {
+    let readdata = null;
+    try {
+      readdata = JSON.parse(request.response);
+    } catch (exception) {
+      return;
+    }
+    console.log({readdata})
+    setImgList(readdata)
+  }
+}

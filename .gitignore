@@ -1,5 +1,4 @@
-data/*.png
-data/*.json
+data/*
 node_modules/*
 .DS_Store
 package-lock.json
