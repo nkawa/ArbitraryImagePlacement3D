@@ -142,7 +142,26 @@ const Z_OrderController = (props)=>{
     props.setzOrder(wkz_order)
   }
 
+  const setTop = ()=>{
+    const max = Math.max(...z_order)
+    if(z_order[imgIdIdx] < max){
+      const wkz_order = [...z_order]
+      wkz_order[imgIdIdx] = max+1
+      props.setzOrder(wkz_order)
+    }
+  }
+
+  const setBottom = ()=>{
+    const min = Math.min(...z_order)
+    if(z_order[imgIdIdx] > min){
+      const wkz_order = [...z_order]
+      wkz_order[imgIdIdx] = min-1
+      props.setzOrder(wkz_order)
+    }
+  }
+
   return (<>{useMemo(()=>
+    <>
     <li className="flex_row">
       <label htmlFor="z_order">{`z_order :`}</label>
       <input type="number" value={z_order[imgIdIdx]}
@@ -150,6 +169,11 @@ const Z_OrderController = (props)=>{
         onChange={setZ_order}
         className="harmovis_input_number" id="z_order" />
     </li>
+    <li className="flex_row">
+      <button onClick={setTop} className='harmovis_button'>z_order top</button>
+      <button onClick={setBottom} className='harmovis_button'>z_order bottom</button>
+    </li>
+    </>
     ,[z_order,imgIdIdx])}</>
   )
 }
