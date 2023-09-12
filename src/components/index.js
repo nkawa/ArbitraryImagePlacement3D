@@ -43,6 +43,11 @@ export default class Controller extends React.Component {
     this.props.setOpacity(opacity)
   }
 
+  onChangeImgOpacity(e){
+    const imgOpacity = +e.target.value
+    this.props.setImgOpacity(imgOpacity)
+  }
+
   onChangeSelect(e){
     const imgIdIdx = +e.target.value
     if(imgIdIdx < 0){
@@ -53,7 +58,7 @@ export default class Controller extends React.Component {
   }
 
   render() {
-    const {setImgList, getOutputData, imgIdIdx, srclist, opacity } = this.props
+    const {setImgList, getOutputData, imgIdIdx, srclist, opacity, imgOpacity } = this.props
     return (
         <div className="harmovis_controller" ref={this.divRef} >
             <div className='panel'><PlacementInput setImgList={setImgList}/></div>
@@ -74,6 +79,17 @@ export default class Controller extends React.Component {
                 min={0} max={1} step={0.1}
                 onChange={this.onChangeOpacity.bind(this)}
                 className="harmovis_input_number" id="opacity" />
+            </li>
+            <li className="flex_row">
+              <label htmlFor="imgOpacity">{`imgOpacity :`}</label>
+              <input type="range" value={imgOpacity}
+                min={0} max={1} step={0.1}
+                onChange={this.onChangeImgOpacity.bind(this)}
+                className="harmovis_input_range" id="imgOpacity" />:
+              <input type="number" value={imgOpacity}
+                min={0} max={1} step={0.1}
+                onChange={this.onChangeImgOpacity.bind(this)}
+                className="harmovis_input_number" id="imgOpacity" />
             </li>
             </ul>
             <div className='panel'>

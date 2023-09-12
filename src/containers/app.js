@@ -32,6 +32,7 @@ const App = (props)=>{
   const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
   const [opacity, setOpacity] = React.useState(1)
+  const [imgOpacity, setImgOpacity] = React.useState(1)
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
   const [viewState, updateViewState] = useState(INITIAL_VIEW_STATE);
@@ -320,6 +321,7 @@ const App = (props)=>{
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           pickable: true,
           onClick,
+          opacity: imgOpacity,
         })
       })
     }
@@ -371,7 +373,8 @@ const App = (props)=>{
         size3d={size3d} setSize3d={setSize3d} deg3d={deg3d} setDeg3d={setDeg3d} pos3d={pos3d} setPos3d={setPos3d}
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
-        z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity} panel={App.panel} />
+        z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity}
+        imgOpacity={imgOpacity} setImgOpacity={setImgOpacity} panel={App.panel} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}
