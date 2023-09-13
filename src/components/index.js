@@ -144,7 +144,8 @@ const Z_OrderController = (props)=>{
 
   const setTop = ()=>{
     const max = Math.max(...z_order)
-    if(z_order[imgIdIdx] < max){
+    const maxArray = z_order.filter(x=>x===max)
+    if(z_order[imgIdIdx] < max || maxArray.length > 1){
       const wkz_order = [...z_order]
       wkz_order[imgIdIdx] = max+1
       props.setzOrder(wkz_order)
@@ -153,7 +154,8 @@ const Z_OrderController = (props)=>{
 
   const setBottom = ()=>{
     const min = Math.min(...z_order)
-    if(z_order[imgIdIdx] > min){
+    const minArray = z_order.filter(x=>x===min)
+    if(z_order[imgIdIdx] > min || minArray.length > 1){
       const wkz_order = [...z_order]
       wkz_order[imgIdIdx] = min-1
       props.setzOrder(wkz_order)
