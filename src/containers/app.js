@@ -32,7 +32,6 @@ const App = (props)=>{
   const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
   const [opacity, setOpacity] = React.useState(1)
-  const [imgOpacity, setImgOpacity] = React.useState(1)
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
   const [viewState, updateViewState] = useState(INITIAL_VIEW_STATE);
@@ -52,6 +51,7 @@ const App = (props)=>{
   const [aspect, setAspect] = useState([])
   const [z_order, setzOrder] = useState([])
   const [imgLock, setImgLock] = useState([])
+  const [imgOpacity, setImgOpacity] = React.useState([])
 
   const { actions, viewport, loading } = props;
 
@@ -111,6 +111,7 @@ const App = (props)=>{
     const workaspect = []
     const workzOrder = []
     const workimgLock = []
+    const workimgOpacity = []
     for(let i=0; i<imglist.length; i=i+1){
       const img = imglist[i]
       const shift = i%10
@@ -125,6 +126,7 @@ const App = (props)=>{
       workaspect.push([0,0,0,0])
       workzOrder.push(100)
       workimgLock.push(false)
+      workimgOpacity.push(1)
     }
     setSrcList(worksrclist)
     setCanvasRef(workcanvasRef)
@@ -138,6 +140,7 @@ const App = (props)=>{
     setAspect(workaspect)
     setzOrder(workzOrder)
     setImgLock(workimgLock)
+    setImgOpacity(workimgOpacity)
     setImgId(null)
     setImgIdIdx(-1)
   }
@@ -234,6 +237,7 @@ const App = (props)=>{
     const workaspect = []
     const workzOrder = []
     const workimgLock = []
+    const workimgOpacity = []
     for(let i=0; i<wkImgRef.length; i=i+1){
       workImgSize.push({width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
       const deg = Math.atan2(wkImgRef[i].naturalHeight,wkImgRef[i].naturalWidth)*180/Math.PI
@@ -242,6 +246,7 @@ const App = (props)=>{
       workTrimmSize.push({x:0,y:0,width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
       workzOrder.push(100)
       workimgLock.push(false)
+      workimgOpacity.push(1)
     }
     setImgRef(wkImgRef)
     setImgSize(workImgSize)
@@ -258,10 +263,14 @@ const App = (props)=>{
       if(imglist[i].imgLock !== undefined){
         workimgLock[i] = imglist[i].imgLock
       }
+      if(imglist[i].imgOpacity !== undefined){
+        workimgOpacity[i] = imglist[i].imgOpacity
+      }
     }
     setAspect(workaspect)
     setzOrder(workzOrder)
     setImgLock(workimgLock)
+    setImgOpacity(workimgOpacity)
     setTrimSize(workTrimmSize)
   },[now,imglist])
 
@@ -331,7 +340,7 @@ const App = (props)=>{
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           pickable: true,
           onClick,
-          opacity: imgOpacity,
+          opacity: imgOpacity[e.idx],
         })
       })
     }
@@ -374,6 +383,9 @@ const App = (props)=>{
       }
       if(imgLock[idx] === true){
         data.imgLock = imgLock[idx]
+      }
+      if(imgOpacity[idx] !== 1){
+        data.imgOpacity = imgOpacity[idx]
       }
       return data
     })
