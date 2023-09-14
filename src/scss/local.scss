@@ -2,6 +2,8 @@
 
 div.harmovis_controller {
   @extend .harmovis_controller;
+  padding: 10px 0px 10px 0px;
+  background-color:rgba(0,0,0,0.5);
   width: 300px;
   ul {
     list-style-type: none; 
