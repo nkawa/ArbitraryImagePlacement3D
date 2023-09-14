@@ -104,34 +104,53 @@ export default class Controller extends React.Component {
   }
 }
 const TransformController = (props)=>{
-  const {imgId, imgIdIdx } = props
+  const {imgId, imgIdIdx, imgLock } = props
 
   return (<>{imgId === null || imgIdIdx === -1 ? null:
     <ul className="flex_list">
       <li className="flex_row">Image Item Control</li>
+      <ImgLockController {...props} />
+      <>{imgLock[imgIdIdx]?null:<>
+        <Z_OrderController {...props} />
 
-      <Z_OrderController {...props} />
+        <PositionController {...props} dim={'x'} />
+        <PositionController {...props} dim={'y'} />
+        <PositionController {...props} dim={'z'} />
 
-      <PositionController {...props} dim={'x'} />
-      <PositionController {...props} dim={'y'} />
-      <PositionController {...props} dim={'z'} />
-      
-      <DegreeController {...props} dim={'x'} />
-      <DegreeController {...props} dim={'y'} />
-      <DegreeController {...props} dim={'z'} />
+        <DegreeController {...props} dim={'x'} />
+        <DegreeController {...props} dim={'y'} />
+        <DegreeController {...props} dim={'z'} />
 
-      <SizeController {...props} />
+        <SizeController {...props} />
 
-      <TrimTopController {...props} />
-      <TrimBottomController {...props} />
-      <TrimLeftController {...props} />
-      <TrimRightController {...props} />
+        <TrimTopController {...props} />
+        <TrimBottomController {...props} />
+        <TrimLeftController {...props} />
+        <TrimRightController {...props} />
+      </>}</>
 
       <ReleaseButton {...props}/>
     </ul>
     }</>
   )
 }
+const ImgLockController = (props)=>{
+  const { imgIdIdx, imgLock } = props
+
+  const getImgLockChecked = (e)=>{
+    const value = e.target.checked
+    const wkimgLock = [...imgLock]
+    wkimgLock[imgIdIdx] = value
+    props.setImgLock(wkimgLock)
+  }
+
+  return(<>{useMemo(()=><>
+    <li className="flex_row">
+      <><input type="checkbox" id="ImgLockChecked" onChange={getImgLockChecked} className='harmovis_input_checkbox' checked={imgLock[imgIdIdx]} />
+      <label htmlFor="ImgLockChecked" title="imgLock">imgLock</label></>
+    </li>
+  </>,[imgIdIdx, imgLock])}</>)
+} 
 const Z_OrderController = (props)=>{
   const { imgIdIdx, z_order } = props
 

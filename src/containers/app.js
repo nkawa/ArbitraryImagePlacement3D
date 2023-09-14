@@ -51,6 +51,7 @@ const App = (props)=>{
   const [pos3d, setPos3d] = useState([])
   const [aspect, setAspect] = useState([])
   const [z_order, setzOrder] = useState([])
+  const [imgLock, setImgLock] = useState([])
 
   const { actions, viewport, loading } = props;
 
@@ -109,6 +110,7 @@ const App = (props)=>{
     const workpos3d = []
     const workaspect = []
     const workzOrder = []
+    const workimgLock = []
     for(let i=0; i<imglist.length; i=i+1){
       const img = imglist[i]
       const shift = i%10
@@ -122,6 +124,7 @@ const App = (props)=>{
       workpos3d.push(img.pos !== undefined ? img.pos : {x:(shift*10-50), y:(shift*10-50), z:i*2})
       workaspect.push([0,0,0,0])
       workzOrder.push(100)
+      workimgLock.push(false)
     }
     setSrcList(worksrclist)
     setCanvasRef(workcanvasRef)
@@ -134,6 +137,7 @@ const App = (props)=>{
     setPos3d(workpos3d)
     setAspect(workaspect)
     setzOrder(workzOrder)
+    setImgLock(workimgLock)
     setImgId(null)
     setImgIdIdx(-1)
   }
@@ -229,6 +233,7 @@ const App = (props)=>{
     const workTrimmSize = []
     const workaspect = []
     const workzOrder = []
+    const workimgLock = []
     for(let i=0; i<wkImgRef.length; i=i+1){
       workImgSize.push({width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
       const deg = Math.atan2(wkImgRef[i].naturalHeight,wkImgRef[i].naturalWidth)*180/Math.PI
@@ -236,6 +241,7 @@ const App = (props)=>{
       workImgDispSize.push({width:wkImgRef[i].clientWidth,height:wkImgRef[i].clientHeight})
       workTrimmSize.push({x:0,y:0,width:wkImgRef[i].naturalWidth,height:wkImgRef[i].naturalHeight})
       workzOrder.push(100)
+      workimgLock.push(false)
     }
     setImgRef(wkImgRef)
     setImgSize(workImgSize)
@@ -249,9 +255,13 @@ const App = (props)=>{
       if(imglist[i].z_order !== undefined){
         workzOrder[i] = imglist[i].z_order
       }
+      if(imglist[i].imgLock !== undefined){
+        workimgLock[i] = imglist[i].imgLock
+      }
     }
     setAspect(workaspect)
     setzOrder(workzOrder)
+    setImgLock(workimgLock)
     setTrimSize(workTrimmSize)
   },[now,imglist])
 
@@ -362,6 +372,9 @@ const App = (props)=>{
       if(z_order[idx] !== 100){
         data.z_order = z_order[idx]
       }
+      if(imgLock[idx] === true){
+        data.imgLock = imgLock[idx]
+      }
       return data
     })
   }
@@ -374,7 +387,7 @@ const App = (props)=>{
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
         z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity}
-        imgOpacity={imgOpacity} setImgOpacity={setImgOpacity} panel={App.panel} />
+        imgOpacity={imgOpacity} setImgOpacity={setImgOpacity} imgLock={imgLock} setImgLock={setImgLock} panel={App.panel} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}
