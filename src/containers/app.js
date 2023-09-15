@@ -26,6 +26,7 @@ const INITIAL_VIEW_STATE = {
 
 const App = (props)=>{
   const [now, setNow] = React.useState(new Date())
+  const [imgdispMode, setImgdispMode] = React.useState(true)
   const [dispStart, setDispStart] = React.useState(false)
   const [dispStart2, setDispStart2] = React.useState(false)
   const [imglist, setImgList] = React.useState([])
@@ -293,16 +294,52 @@ const App = (props)=>{
           const {width:dspwidth,height:dspheight} = imgDispSize[i] !== undefined ? imgDispSize[i] : {width:0,height:0}
           const {x,y,width:trimwidth,height:trimheight} = trimSize[i]
           context[i].clearRect(0,0,dspwidth,dspheight)
-          context[i].drawImage(imgRef[i], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
+          if(imgdispMode){
+            context[i].drawImage(imgRef[i], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
+          }else{
+            context[i].fillStyle = imgLock[i]?"green":"blue";
+            context[i].fillRect(0, 0, trimwidth, trimheight)
+            context[i].strokeStyle = "white"
+            context[i].lineWidth = 5
+            context[i].strokeRect(0, 0, trimwidth, trimheight)
+            context[i].fillStyle = "white"
+            context[i].font = "80px monospace"
+            context[i].fillText(imglist[i].src,100,150,trimwidth-200)
+            context[i].fillText(`z_order:${z_order[i]}`,100,250,trimwidth-200)
+            context[i].fillText(`size:${size3d[i]}`,100,350,trimwidth-200)
+            const top = trimSize[i].y
+            const bottom = imgSize[i].height-trimSize[i].y-trimSize[i].height
+            const left = trimSize[i].x
+            const right = imgSize[i].width-trimSize[i].x-trimSize[i].width
+            context[i].fillText(`trim:[${top},${bottom},${left},${right}]`,100,450,trimwidth-200)
+          }
         }
       }else{
         const {width:dspwidth,height:dspheight} = imgDispSize[imgIdIdx] !== undefined ? imgDispSize[imgIdIdx] : {width:0,height:0}
         const {x,y,width:trimwidth,height:trimheight} = trimSize[imgIdIdx]
         context[imgIdIdx].clearRect(0,0,dspwidth,dspheight)
-        context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
+        if(imgdispMode){
+          context[imgIdIdx].drawImage(imgRef[imgIdIdx], x, y, trimwidth, trimheight, 0, 0, trimwidth, trimheight)
+        }else{
+          context[imgIdIdx].fillStyle = imgLock[imgIdIdx]?"green":"blue";
+          context[imgIdIdx].fillRect(0, 0, trimwidth, trimheight)
+          context[imgIdIdx].strokeStyle = "white"
+          context[imgIdIdx].lineWidth = 5
+          context[imgIdIdx].strokeRect(0, 0, trimwidth, trimheight)
+          context[imgIdIdx].fillStyle = "white"
+          context[imgIdIdx].font = "80px monospace"
+          context[imgIdIdx].fillText(imglist[imgIdIdx].src,100,150,trimwidth-200)
+          context[imgIdIdx].fillText(`z_order:${z_order[imgIdIdx]}`,100,250,trimwidth-200)
+          context[imgIdIdx].fillText(`size:${size3d[imgIdIdx]}`,100,350,trimwidth-200)
+          const top = trimSize[imgIdIdx].y
+          const bottom = imgSize[imgIdIdx].height-trimSize[imgIdIdx].y-trimSize[imgIdIdx].height
+          const left = trimSize[imgIdIdx].x
+          const right = imgSize[imgIdIdx].width-trimSize[imgIdIdx].x-trimSize[imgIdIdx].width
+          context[imgIdIdx].fillText(`trim:[${top},${bottom},${left},${right}]`,100,450,trimwidth-200)
+      }
       }
     }
-  },[dispStart,dispStart2,imgDispSize,trimSize])
+  },[dispStart,dispStart2,imgDispSize,trimSize,imgdispMode,imgIdIdx,imgLock])
 
   React.useEffect(()=>{
     window.onkeydown = (e)=>{
@@ -324,6 +361,7 @@ const App = (props)=>{
     return new PathLayer({
       id: `PathLayer-${imgIdIdx}}`,
       data: [[bounds[imgIdIdx][0],bounds[imgIdIdx][1],bounds[imgIdIdx][2],bounds[imgIdIdx][3],bounds[imgIdIdx][0]]],
+      coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
       getPath: (x) => x,
       getColor: ()=>[0,255,0,255],
       getWidth: ()=>0.1,
@@ -334,13 +372,13 @@ const App = (props)=>{
     if(dispStart2){
       return layerlist.map((e)=>{
         return new BitmapLayer({
-          id: `BitmapLayer-${e.idx}-${update[e.idx]}`,
+          id: `BitmapLayer-${e.idx}-${update[e.idx]}-${imgdispMode}`,
           image: canvasRef[e.idx],
           bounds: bounds[e.idx],
           coordinateSystem: COORDINATE_SYSTEM.CARTESIAN,
           pickable: true,
           onClick,
-          opacity: imgOpacity[e.idx],
+          opacity: imgdispMode?imgOpacity[e.idx]:0.5,
         })
       })
     }
@@ -399,7 +437,8 @@ const App = (props)=>{
         trimSize={trimSize} setTrimSize={setTrimSize} update={update} setUpdate={setUpdate}
         srclist={srclist} getOutputData={getOutputData} aspect={aspect} setAspect={setAspect}
         z_order={z_order} setzOrder={setzOrder} opacity={opacity} setOpacity={setOpacity}
-        imgOpacity={imgOpacity} setImgOpacity={setImgOpacity} imgLock={imgLock} setImgLock={setImgLock} panel={App.panel} />
+        imgOpacity={imgOpacity} setImgOpacity={setImgOpacity} imgLock={imgLock} setImgLock={setImgLock}
+        imgdispMode={imgdispMode} setImgdispMode={setImgdispMode} panel={App.panel} />
       <div className="harmovis_area">
       <DeckGL
           views={new OrbitView({orbitAxis: 'Z', fov: 50})}
@@ -422,8 +461,6 @@ const App = (props)=>{
                 getColor: (x) => x.color || [255,255,255,255],
                 opacity: opacity,
               }),
-              getLayers(),
-              getPathLayers(),
               new SimpleMeshLayer({
                 id:'obj_1F',
                 data:[{position:[0,0,0]}],
@@ -435,6 +472,8 @@ const App = (props)=>{
                 getScale:[1.7,1.7,1.7],
                 opacity: opacity,
               }),
+              getLayers(),
+              getPathLayers(),
           ]}
       />
       </div>

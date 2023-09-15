@@ -77,8 +77,13 @@ export default class Controller extends React.Component {
     this.props.setPos3d(wkpos3d)
   }
 
+  getImgdispModeChecked(e){
+    const value = e.target.checked
+    this.props.setImgdispMode(value)
+  }
+
   render() {
-    const {setImgList, getOutputData, imgIdIdx, srclist, opacity } = this.props
+    const {setImgList, getOutputData, imgIdIdx, srclist, opacity, imgdispMode, setImgdispMode } = this.props
     return (
         <div className="harmovis_controller" ref={this.divRef} >
             <div className='panel'><PlacementInput setImgList={setImgList}/></div>
@@ -89,6 +94,13 @@ export default class Controller extends React.Component {
               <button onClick={this.onClick.bind(this,'zoom-out')} className='harmovis_button'>－</button>
               <button onClick={this.onClick.bind(this,'reset')} className='harmovis_button'>RESET</button>
             </li>
+            {imgIdIdx<0?
+              <li className="flex_row">
+                <input type="checkbox" id="imgdispMode" onChange={this.getImgdispModeChecked.bind(this)}
+                  className='harmovis_input_checkbox' checked={imgdispMode} />
+                <label htmlFor="imgdispMode" title="imgLock">ImgdispMode</label>
+              </li>:null
+            }
             <li className="flex_row">
               <label htmlFor="opacity">{`opacity :`}</label>
               <input type="range" value={opacity}
