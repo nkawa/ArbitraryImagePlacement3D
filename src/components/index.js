@@ -52,6 +52,31 @@ export default class Controller extends React.Component {
     }
   }
 
+  allPositionController(buttonType){
+    const wkpos3d = [...this.props.pos3d]
+    for(let i=0; i<wkpos3d.length; i=i+1){
+      switch (buttonType) {
+        case 'up': {
+          wkpos3d[i]['y'] = wkpos3d[i]['y'] + 0.1
+          break
+        }
+        case 'down': {
+          wkpos3d[i]['y'] = wkpos3d[i]['y'] - 0.1
+          break
+        }
+        case 'left': {
+          wkpos3d[i]['x'] = wkpos3d[i]['x'] - 0.1
+          break
+        }
+        case 'right': {
+          wkpos3d[i]['x'] = wkpos3d[i]['x'] + 0.1
+          break
+        }
+      }
+    }
+    this.props.setPos3d(wkpos3d)
+  }
+
   render() {
     const {setImgList, getOutputData, imgIdIdx, srclist, opacity } = this.props
     return (
@@ -75,6 +100,15 @@ export default class Controller extends React.Component {
                 onChange={this.onChangeOpacity.bind(this)}
                 className="harmovis_input_number" id="opacity" />
             </li>
+            {imgIdIdx<0?
+              <li className="flex_row">
+                <label>{`All pos:`}</label>
+                <button onClick={this.allPositionController.bind(this,'up')} className='harmovis_button'>↑</button>
+                <button onClick={this.allPositionController.bind(this,'down')} className='harmovis_button'>↓</button>
+                <button onClick={this.allPositionController.bind(this,'left')} className='harmovis_button'>←</button>
+                <button onClick={this.allPositionController.bind(this,'right')} className='harmovis_button'>→</button>
+              </li>:null
+            }
             </ul>
             <div className='panel'>
               <select className='local_select' value={imgIdIdx} onChange={this.onChangeSelect.bind(this)}>

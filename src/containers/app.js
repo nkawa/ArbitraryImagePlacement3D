@@ -31,7 +31,7 @@ const App = (props)=>{
   const [imglist, setImgList] = React.useState([])
   const [layerlist, setLayerList] = React.useState([])
   const [srclist, setSrcList] = React.useState([])
-  const [opacity, setOpacity] = React.useState(1)
+  const [opacity, setOpacity] = React.useState(0.5)
 
   const [state,setState] = useState({ popup: [0, 0, ''] })
   const [viewState, updateViewState] = useState(INITIAL_VIEW_STATE);
