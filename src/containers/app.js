@@ -461,6 +461,8 @@ const App = (props)=>{
                 getColor: (x) => x.color || [255,255,255,255],
                 opacity: opacity,
               }),
+              getLayers(),
+              getPathLayers(),
               new SimpleMeshLayer({
                 id:'obj_1F',
                 data:[{position:[0,0,0]}],
@@ -472,8 +474,6 @@ const App = (props)=>{
                 getScale:[1.7,1.7,1.7],
                 opacity: opacity,
               }),
-              getLayers(),
-              getPathLayers(),
           ]}
       />
       </div>
